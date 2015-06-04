@@ -8,10 +8,10 @@ Stable tag: trunk
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.en.html
 
-ScoutTroop is an admin plugin targeted for Boy Scout troops.  It provides easy mechanisms to assign ranks, patrols and leadership positions to scouts and committee roles to adults.
+ScoutTroop is an plugin for Boy Scout troops.  It provides mechanisms to assign ranks, patrols & leadership positions to scouts & roles to adults.
 
 == Description ==
-ScoutTroop is an admin plugin targeted for Boy Scout troops.  It provides easy mechanisms to assign ranks, patrols and leadership positions to scouts and committee roles to adults.
+ScoutTroop is an plugin for Boy Scout troops.  It provides mechanisms to assign ranks, patrols & leadership positions to scouts & roles to adults.
 
 Features:
 - Adds 2 new roles: Adult / Scout allowing 
