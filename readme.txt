@@ -4,7 +4,7 @@ Tags: BSA, Boy Scouts, Troop, Scouting
 Donate link: http://troop351.org/scouttroop-wordpress-plugin/
 Requires at least: 4.2.2
 Tested up to: 4.2.2
-Stable tag: 1.1
+Stable tag: 1.22
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.en.html
 

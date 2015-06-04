@@ -19,7 +19,7 @@ function patrol_list_func($arg){
 add_shortcode('patrol_list', 'patrol_list_func');
 
 function scouttroop_name_by_rank(){	
-	 $data = get_users( array('role'=>'Scout', 'fields' => array('ID', 'display_name')));			       
+	 $data = get_users( array('role'=>'Scout', 'fields' => array('ID', 'display_name'), 'order_by' => 'display_name'));			       
      $data = json_decode(json_encode($data), true);
      $i=0;
      $k=0;
@@ -35,7 +35,16 @@ function scouttroop_name_by_rank(){
 	$max_i = 0;
 	foreach ($ranks_order as $rank){
 		// build header row here
-		$rank_table_ui .= '<th class="ptn_scouttroop_rank_table_rank" >'.$rank.'</th>';
+		//$rank_table_ui .= '<th class="ptn_scouttroop_rank_table_rank" >'.$rank.'</th>';
+		$rank_img = plugins_url('scouttroop').'/assets\/'.strtolower(str_replace(' ','_',$rank)).'-small.png';
+		$rank_table_ui .= '<th class="ptn_scouttroop_rank_table_rank" >';
+		if (!empty($rank)){
+			$rank_table_ui .= '<img src='.$rank_img.' />'.$rank.'</th>';
+		}else{
+			$rank_table_ui .= '</th>';
+		}
+		
+		
 		$i = 0;
 		if (is_array($rank_name_list[$rank])){
 			foreach ($rank_name_list[$rank] as $name_rank){
@@ -79,10 +88,7 @@ function scouttroop_patrol_directory(){
  <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
  	<header class="entry-header">
  		<?php $the_patrol = $_SERVER['QUERY_STRING']; ?>
- 		<h1 class="entry-title"><?php echo $the_patrol; ?></h1>
- 		<div class="entry-meta">
- 			<?php //black_white_posted_on(); ?>
- 		</div><!-- .entry-meta -->
+ 		<h2><?php echo $the_patrol; ?></h2>
  	</header><!-- .entry-header -->
  	<div class="entry-content">
      <table class="ptn_scouttroop_patrol_table" ><tr><th class="ptn_scouttroop_patrol_table_hdr" >Name</th><th class="ptn_scouttroop_patrol_table_hdr">Phone</th><th class="ptn_scouttroop_patrol_table_hdr">Role</th><th class="ptn_scouttroop_patrol_table_hdr">Rank</th></tr>
@@ -104,7 +110,8 @@ function scouttroop_patrol_directory(){
   				?></td>
   				<td class="ptn_scouttroop_patrol_table_phone" ><?php if ( !empty($scout->phone)){echo antispambot(format_telephone($scout->phone)); }?></td>  				
 				<?php $scout_leadership = get_user_meta($scout->ID, 'leadership');?>
-  				<td class="ptn_scouttroop_patrol_table_leadership" ><?php if(is_array($scout->leadership)){foreach($scout->leadership as $role){echo $role.', ';}}?></td>
+  				<td class="ptn_scouttroop_patrol_table_leadership" >
+  				<?php if(is_array($scout->leadership)){foreach($scout->leadership as $role){echo $role.', ';}}?></td>
 				
 				<?php if(empty($scout->rank)){echo '<td></td>'; }else{
 					$rank=plugins_url('scouttroop').'/assets\/'.strtolower(str_replace(' ','_',$scout->rank)).'-small.png'; ?>
@@ -126,9 +133,6 @@ function scouttroop_committee_directory(){
  <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
  	<header class="entry-header">
  		<h1 class="entry-title"><?php echo 'Committee' ?></h1>
- 		<div class="entry-meta">
- 			<?php //black_white_posted_on(); ?>
- 		</div><!-- .entry-meta -->
  	</header><!-- .entry-header -->
  	<div class="entry-content">
      <table class="ptn_scouttroop_committee_table_hdr" ><tr><th class="ptn_scouttroop_committee_table_hdr" >Name</th><th class="ptn_scouttroop_committee_table_hdr" >Role</th><th class="ptn_scouttroop_committee_table_hdr" >Phone</th><th class="ptn_scouttroop_committee_table_hdr" >Email</th></tr>

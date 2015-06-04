@@ -120,7 +120,7 @@ class scouttroop_adult_List_Table extends WP_List_Table {
 					LEFT JOIN wp_usermeta wpum
 					ON wpu.id = wpum.user_id AND wpum.meta_key = 'adult'";
  
-        $data = get_users( array('role'=>'Adult', 'fields' => array('ID', 'display_name')));			       
+        $data = get_users( array('role'=>'Adult', 'fields' => array('ID', 'display_name'),'orderby' => 'display_name'));			       
         $data = json_decode(json_encode($data), true);
         $i=0;
         foreach ($data as $single_user){
@@ -135,7 +135,7 @@ class scouttroop_adult_List_Table extends WP_List_Table {
             $result = strcmp($a[$orderby], $b[$orderby]); //Determine sort order
             return ($order==='asc') ? $result : -$result; //Send final sort direction to usort
         }
-        usort($data, 'usort_reorder');
+      //  usort($data, 'usort_reorder');
 
         $current_page = $this->get_pagenum();
 
