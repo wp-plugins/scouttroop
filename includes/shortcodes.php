@@ -22,10 +22,11 @@ function scouttroop_name_by_rank(){
 	 $data = get_users( array('role'=>'Scout', 'fields' => array('ID', 'display_name')));			       
      $data = json_decode(json_encode($data), true);
      $i=0;
+     $k=0;
      foreach ($data as $single_user){
      	$data[$i++]['meta_value'] = get_user_meta($single_user['ID'],'rank', true);         	
      	$rank = get_user_meta($single_user['ID'],'rank', true);         	
-     	$rank_name_list[$rank][]= $single_user['display_name'];
+     	$rank_name_list[$rank][]= array($single_user['display_name'], $single_user['ID']);
 	 }		       
 
 	$rank_table_ui = '<table class="ptn_scouttroop_rank_table"><tr>';
@@ -38,7 +39,7 @@ function scouttroop_name_by_rank(){
 		$i = 0;
 		if (is_array($rank_name_list[$rank])){
 			foreach ($rank_name_list[$rank] as $name_rank){
-				$rank_table[$rank][$i++] = $name_rank;
+				$rank_table[$rank][$i++] = $name_rank['display_name'];
 				if ($max_i < $i){
 					$max_i = $i;
 				}
@@ -57,7 +58,7 @@ function scouttroop_name_by_rank(){
 				if (is_user_logged_in()){
 					$rank_table_ui .= '<td class="ptn_scouttroop_rank_table_name" >'.$rank_name_list[$rank][$i].'</td>';
 				}else{
-					$rank_table_ui .= '<td class="ptn_scouttroop_rank_table_name" >'.first_last_init($rank_name_list[$rank][$i]).'</td>';
+					$rank_table_ui .= '<td class="ptn_scouttroop_rank_table_name" >'.first_last_init($rank_name_list[$rank][$i][1]).'</td>';
 				}
 			}else{
 				$rank_table_ui .= '<td></td>';
@@ -104,8 +105,11 @@ function scouttroop_patrol_directory(){
   				<td class="ptn_scouttroop_patrol_table_phone" ><?php if ( !empty($scout->phone)){echo antispambot(format_telephone($scout->phone)); }?></td>  				
 				<?php $scout_leadership = get_user_meta($scout->ID, 'leadership');?>
   				<td class="ptn_scouttroop_patrol_table_leadership" ><?php if(is_array($scout_leadership)){foreach($scout->leadership as $role){echo $role.', ';}}?></td>
-				<?php $rank=plugins_url('scouttroop').'/assets\/'.strtolower(str_replace(' ','_',$scout->rank)).'-small.png'; ?>
-  				<td class="ptn_scouttroop_patrol_table_rank_img" ><img class="directory-rank" src= <?php echo $rank;?> /></td>
+				
+				<?php if(empty($scout->rank)){echo '<td></td>'; }else{
+					$rank=plugins_url('scouttroop').'/assets\/'.strtolower(str_replace(' ','_',$scout->rank)).'-small.png'; ?>
+  					<td class="ptn_scouttroop_patrol_table_rank_img" ><img class="directory-rank" src= <?php echo $rank;?> /></td>
+  				<?php } ?>
   			</tr>
   	<?php }} ?>
   	</table>

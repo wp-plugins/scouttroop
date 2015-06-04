@@ -1,7 +1,7 @@
 <?php
 /* Common functions */
-function first_last_init($nicename){
-	$user_info = get_user_by('slug', $nicename);
+function first_last_init($id){
+	$user_info = get_user_by('id', $id);
 	$first_last_initial = $user_info->first_name.' '.$user_info->last_name[0];
 	return $first_last_initial;
 }
