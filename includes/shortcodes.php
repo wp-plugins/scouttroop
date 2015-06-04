@@ -56,7 +56,7 @@ function scouttroop_name_by_rank(){
 			// build detail rows here
 			if (! empty($rank_name_list[$rank][$i])){
 				if (is_user_logged_in()){
-					$rank_table_ui .= '<td class="ptn_scouttroop_rank_table_name" >'.$rank_name_list[$rank][$i].'</td>';
+					$rank_table_ui .= '<td class="ptn_scouttroop_rank_table_name" >'.$rank_name_list[$rank][$i][0].'</td>';
 				}else{
 					$rank_table_ui .= '<td class="ptn_scouttroop_rank_table_name" >'.first_last_init($rank_name_list[$rank][$i][1]).'</td>';
 				}
