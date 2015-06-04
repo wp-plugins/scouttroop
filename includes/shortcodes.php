@@ -104,7 +104,7 @@ function scouttroop_patrol_directory(){
   				?></td>
   				<td class="ptn_scouttroop_patrol_table_phone" ><?php if ( !empty($scout->phone)){echo antispambot(format_telephone($scout->phone)); }?></td>  				
 				<?php $scout_leadership = get_user_meta($scout->ID, 'leadership');?>
-  				<td class="ptn_scouttroop_patrol_table_leadership" ><?php if(is_array($scout_leadership)){foreach($scout->leadership as $role){echo $role.', ';}}?></td>
+  				<td class="ptn_scouttroop_patrol_table_leadership" ><?php if(is_array($scout->leadership)){foreach($scout->leadership as $role){echo $role.', ';}}?></td>
 				
 				<?php if(empty($scout->rank)){echo '<td></td>'; }else{
 					$rank=plugins_url('scouttroop').'/assets\/'.strtolower(str_replace(' ','_',$scout->rank)).'-small.png'; ?>
