@@ -4,7 +4,7 @@ Tags: BSA, Boy Scouts, Troop, Scouting
 Donate link: http://troop351.org/scouttroop-wordpress-plugin/
 Requires at least: 4.2.2
 Tested up to: 4.2.2
-Stable tag: 1.2
+Stable tag: 1.2.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.en.html
 
@@ -54,8 +54,11 @@ FAQs soon...
 3. Assign scouts to patrols.
 4. Assign rank to scouts.
 5. Assign scouts to leadership positions.
+6. Scouts by rank grid
 
 == Changelog ==
+1.2.1 Cleanup of tables
+
 1.2 Ordered admin screens by display_name
 
 1.1 Updated Scout by Rank table, Removed reference to empty image

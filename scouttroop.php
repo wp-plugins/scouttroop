@@ -3,7 +3,7 @@
  * Plugin Name: ScoutTroop
  * Plugin URI: http://troop351.org/scouttroop-wordpress-plugin/
  * Description: A brief description of the plugin.
- * Version: 0.1
+ * Version: 1.2.1
  * Author: Phil Newman
  * Author URI: http://getyourphil.net
  * License: GPL3 

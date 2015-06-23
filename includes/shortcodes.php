@@ -39,7 +39,7 @@ function scouttroop_name_by_rank(){
 		$rank_img = plugins_url('scouttroop').'/assets\/'.strtolower(str_replace(' ','_',$rank)).'-small.png';
 		$rank_table_ui .= '<th class="ptn_scouttroop_rank_table_rank" >';
 		if (!empty($rank)){
-			$rank_table_ui .= '<img src='.$rank_img.' />'.$rank.'</th>';
+			$rank_table_ui .= '<img src='.$rank_img.' /></th>';
 		}else{
 			$rank_table_ui .= '</th>';
 		}
@@ -83,7 +83,13 @@ function scouttroop_name_by_rank(){
 add_shortcode( 'scoutbyrank', 'scouttroop_name_by_rank');
 
 function scouttroop_patrol_directory(){
-	$patrol = $_SERVER['QUERY_STRING']; 	
+	$patrol = $_SERVER['QUERY_STRING']; 
+	if (wp_is_mobile()){ 
+		$img_size = 'mobile' ;
+	} else { 
+		$img_size = 'small' ;
+	} 
+	$table_hdr = '<table class="ptn_scouttroop_patrol_table">';	
  ?>
  <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
  	<header class="entry-header">
@@ -91,17 +97,23 @@ function scouttroop_patrol_directory(){
  		<h2><?php echo $the_patrol; ?></h2>
  	</header><!-- .entry-header -->
  	<div class="entry-content">
-     <table class="ptn_scouttroop_patrol_table" ><tr><th class="ptn_scouttroop_patrol_table_hdr" >Name</th><th class="ptn_scouttroop_patrol_table_hdr">Phone</th><th class="ptn_scouttroop_patrol_table_hdr">Role</th><th class="ptn_scouttroop_patrol_table_hdr">Rank</th></tr>
-    
+   
      <?php 
-	 // Assumption here is that patrol are only for role of Scout;  Therefore no adults 'should' appear on this list and are not specifically excluded.
-	 	
+     	echo $table_hdr;
+	 // Assumption here is that patrol are only for role of Scout;  Therefore no adults 'should' appear on this list and are not specifically excluded.	 	
      	$query = array('meta_key' => 'patrol', 'meta_value' => $patrol);
      	$user_query = new WP_User_Query($query);
     
      	if (is_array($user_query->results)){
      		foreach($user_query->results as $scout){ ?>
   			<tr>
+  				<?php if(empty($scout->rank)){
+  						echo '<td></td>'; 
+  					  }else{
+						$rank=plugins_url('scouttroop').'/assets\/'.strtolower(str_replace(' ','_',$scout->rank)).'-'.$img_size.'.png'; ?>
+					<td class="ptn_scouttroop_patrol_table_rank_img" ><img class="directory-rank" src= <?php echo $rank;?> /></td>
+  				<?php } ?>
+  			
   				<td class="ptn_scouttroop_patrol_table_name" ><?php if (is_user_logged_in()){
   						print $scout->user_firstname.' '.$scout->user_lastname; 
   					}else{
@@ -112,18 +124,13 @@ function scouttroop_patrol_directory(){
 				<?php $scout_leadership = get_user_meta($scout->ID, 'leadership');?>
   				<td class="ptn_scouttroop_patrol_table_leadership" >
   				<?php if(is_array($scout->leadership)){foreach($scout->leadership as $role){echo $role.', ';}}?></td>
-				
-				<?php if(empty($scout->rank)){echo '<td></td>'; }else{
-					$rank=plugins_url('scouttroop').'/assets\/'.strtolower(str_replace(' ','_',$scout->rank)).'-small.png'; ?>
-  					<td class="ptn_scouttroop_patrol_table_rank_img" ><img class="directory-rank" src= <?php echo $rank;?> /></td>
-  				<?php } ?>
   			</tr>
   	<?php }} ?>
   	</table>
 
  	</div><!-- .entry-content -->
 
- 	<footer class="entry-meta"><?php
+    	<!--footer class="entry-meta">--><?php	
 }
 add_shortcode( 'patroldirectory', 'scouttroop_patrol_directory');
 
@@ -131,11 +138,13 @@ function scouttroop_committee_directory(){
 	// Not my best work - but functional for v1
  ?>
  <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
- 	<header class="entry-header">
- 		<h1 class="entry-title"><?php echo 'Committee' ?></h1>
- 	</header><!-- .entry-header -->
+    <?php
+    	if (!wp_is_mobile()){
+    		echo '<header class="entry-header"></header>';
+    	}
+    ?>
  	<div class="entry-content">
-     <table class="ptn_scouttroop_committee_table_hdr" ><tr><th class="ptn_scouttroop_committee_table_hdr" >Name</th><th class="ptn_scouttroop_committee_table_hdr" >Role</th><th class="ptn_scouttroop_committee_table_hdr" >Phone</th><th class="ptn_scouttroop_committee_table_hdr" >Email</th></tr>
+     <table class="ptn_scouttroop_committee_table_hdr" >
     
      <?php 
   		$query = array('meta_key' => 'adult', 'query_where' => 'meta_value like REGEXP "Committee Chair|Treasurer|Outdoor Chair|Friends of Scouting|New Family Coordinator|Equipment Coordinator"');
@@ -152,16 +161,24 @@ function scouttroop_committee_directory(){
   					}else{
   						print $committee->user_firstname.' '.$committee->user_lastname[0];
   					}
-  				?></td>
+  				?></td>		
+				<?php 
+	     					if (!empty($committee->phone)){
+	     						$display_phone_number = antispambot(format_telephone($committee->phone));
+	     					}else{
+	     						$display_phone_number = "";
+	     					} 
+	     				?>
 				<?php $committee_leadership = get_user_meta($committee->ID, 'adult');?>
   				<td class="ptn_scouttroop_committee_table_leadership" ><?php if(is_array($committee_leadership)){foreach($committee_leadership[0] as $role){echo $role.', ';}}?></td>
-				<td  class="ptn_scouttroop_committee_table_phone" ><?php if ( !empty($committee->phone)){echo antispambot(format_telephone($committee->phone)); }?></td>  
+<td class="ptn_scouttroop_committee_table_phone"><a href="tel:+<?php echo $display_phone_number;?>"><?php echo $display_phone_number; ?></a></td>
+
 				<td  class="ptn_scouttroop_committee_table_email" ><a href="mailto:<?php echo antispambot($committee->user_email); ?>"> <?php echo antispambot( $committee->user_email ); ?></a></td>	
   			</tr>
   	<?php }}} ?>
   	</table>
  	</div><!-- .entry-content -->
- 	<footer class="entry-meta"><?php	
+    	<!--footer class="entry-meta">--><?php	
 }
 add_shortcode ('committeedirectory', 'scouttroop_committee_directory');
 
@@ -169,14 +186,13 @@ function scouttroop_scoutmaster_directory(){
 	// Not my best work - but functional for v1
     ?>
     <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
-    	<header class="entry-header">
-    		<h1 class="entry-title"><?php echo 'Scoutmasters' ?></h1>
-    		<div class="entry-meta">
-    			<?php //black_white_posted_on(); ?>
-    		</div><!-- .entry-meta -->
-    	</header><!-- .entry-header -->
+    <?php
+    	if (!wp_is_mobile()){
+    		echo '<header class="entry-header"></header>';
+    	}
+    ?>
     	<div class="entry-content">
-        <table class="ptn_scouttroop_sm_table" ><tr><th class="ptn_scouttroop_sm_table_hdr" >Name</th><th class="ptn_scouttroop_sm_table_hdr" >Role</th><th class="ptn_scouttroop_sm_table_hdr" >Phone</th><th class="ptn_scouttroop_sm_table_hdr" >Email</th></tr>
+        <table class="ptn_scouttroop_sm_table" >
     
         <?php 
 		$query = array('meta_key' => 'adult');
@@ -195,16 +211,65 @@ function scouttroop_scoutmaster_directory(){
      						print $sm->user_firstname.' '.$sm->user_lastname[0];
      					}
      				?></td>
-     			<td class="ptn_scouttroop_sm_table_sm" >Scoutmaster</td>
-  				<td  class="ptn_scouttroop_sm_table_phone" ><?php if ( !empty($sm->phone)){echo antispambot(format_telephone($sm->phone)); }?></td> 
+					<?php 
+		     					if (!empty($sm->phone)){
+		     						$display_phone_number = antispambot(format_telephone($sm->phone));
+		     					}else{
+		     						$display_phone_number = "";
+		     					} 
+		     				?>
+<td class="ptn_scouttroop_sm_table_phone"><a href="tel:+<?php echo $display_phone_number;?>"><?php echo $display_phone_number; ?></a></td>
   				<td  class="ptn_scouttroop_sm_table_email" ><a href="mailto:<?php echo antispambot($sm->user_email); ?>"> <?php echo antispambot( $sm->user_email ); ?></a></td>	
      			</tr>
      	<?php }}} ?>
      	</table>
     	</div><!-- .entry-content -->
-    	<footer class="entry-meta"><?php	
+    	<!--footer class="entry-meta">--><?php	
 }
 add_shortcode ('scoutmasterdirectory', 'scouttroop_scoutmaster_directory');
+
+function scouttroop_adult_directory(){
+	// Not my best work - but functional for v1
+    ?>
+    <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
+    <?php
+    	if (!wp_is_mobile()){
+    		echo '<header class="entry-header"></header>';
+    	}
+    ?>
+    	<div class="entry-content">
+        <table class="ptn_scouttroop_adult_table" >
+    
+        <?php 
+		$query = array('role' => 'adult');
+	 	$user_query = new WP_User_Query($query);
+        	if (is_array($user_query->results)){
+        		foreach($user_query->results as $sm){ 
+					?>
+     			<tr>
+     				<td class="ptn_scouttroop_adult_table_name" ><?php if (is_user_logged_in()){
+     						print $sm->user_firstname.' '.$sm->user_lastname; 
+     					}else{
+     						print $sm->user_firstname.' '.$sm->user_lastname[0];
+     					}
+     				?></td>
+     				<?php 
+     					if (!empty($sm->phone)){
+     						$display_phone_number = antispambot(format_telephone($sm->phone));
+     					}else{
+     						$display_phone_number = "";
+     					} 
+     				?>
+				<td class="ptn_scouttroop_adult_table_phone"><a href="tel:+<?php echo $display_phone_number;?>"><?php echo $display_phone_number; ?></a></td>
+  				<td  class="ptn_scouttroop_adult_table_email" ><a href="mailto:<?php echo antispambot($sm->user_email); ?>"> <?php echo antispambot( $sm->user_email ); ?></a></td>	
+     			</tr>
+     	<?php }} ?>
+     	</table>
+    	</div><!-- .entry-content -->
+    	<!--footer class="entry-meta">--><?php	
+}
+add_shortcode ('adultdirectory', 'scouttroop_adult_directory');
+
 
 function format_telephone($phone_number)
 {
